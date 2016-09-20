@@ -8,7 +8,9 @@ PIDFile=/run/ssh-hostca/pid
 User=ssh-hostca
 Group=ssh-hostca
 WorkingDirectory={{ ssh_hostca_workdir }}
-ExecStart=/bin/gunicorn --pid /run/ssh-hostca/pid ssh-hostca-srv:app
+Environment="PYTHONPATH=/usr/local/lib/python/site-packages"
+Environment="SSH_CADOMAIN={{ ssh_hostca_domain }}"
+ExecStart=/bin/gunicorn --pid /run/ssh-hostca/pid ssh_hostca_srv:app
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
 PrivateTmp=true
