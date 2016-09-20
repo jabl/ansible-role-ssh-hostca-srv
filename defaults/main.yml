@@ -1,0 +1,11 @@
+---
+# defaults file for ansible-role-ssh-hostca-srv
+
+# Port that the ssh host CA service should listen on
+ssh_hostca_port: 8080
+
+# Work dir
+ssh_hostca_workdir: '/var/local/ssh-hostca'
+
+# Path of the private key for the ssh host CA
+ssh_hostca_keypath: "{{ ssh_hostca_workdir }}/hostca"

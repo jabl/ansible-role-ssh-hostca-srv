@@ -1,0 +1,17 @@
+[Unit]
+Description=ssh host CA signing daemon
+Requires=ssh-hostca.socket
+After=network.target
+
+[Service]
+PIDFile=/run/ssh-hostca/pid
+User=ssh-hostca
+Group=ssh-hostca
+WorkingDirectory={{ ssh_hostca_workdir }}
+ExecStart=/bin/gunicorn --pid /run/ssh-hostca/pid ssh-hostca-srv:app
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

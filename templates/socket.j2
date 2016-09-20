@@ -1,0 +1,9 @@
+[Unit]
+Description=ssh-hostca.socket
+
+[Socket]
+ListenStream=/run/ssh-hostca/socket
+ListenStream={{ ssh_hostca_port }}
+
+[Install]
+WantedBy=sockets.target

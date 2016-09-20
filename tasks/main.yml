@@ -1,0 +1,42 @@
+---
+# tasks file for ansible-role-ssh-hostca-srv
+
+- name: Install flask and gunicorn
+  package: name={{ item }} ensure=installed
+  with_items:
+    - python-flask
+    - python-gunicorn
+    - python2-future
+
+- name: Create hostca group
+  group: name=ssh-hostca system=yes
+
+- name: Create hostca user
+  user: name=ssh-hostca system=yes group=ssh-hostca
+  
+- name: Create the SSH host CA directory
+  file: path="{{ ssh_hostca_workdir | dirname }}" owner=hostca group=hostca mode=0644 state=directory
+
+- name: Create the SSH host CA keys
+  command: /usr/bin/ssh-keygen -t ed25519 -f "{{ ssh_hostca_keypath }}" -N "" -C "ssh host CA" creates="{{ ssh_hostca_keypath }}"
+
+- name: Create gunicorn systemd socket unit
+  template: src=socket.j2 dest=/etc/systemd/system/ssh-hostca.socket owner=root group=root mode=0644
+
+- name: Create gunicorn systemd service unit
+  template: src=service.j2 dest=/etc/systemd/system/ssh-hostca.service owner=root group=root mode=0644
+
+- name: Private tmp definition for ssh-hostca-srv
+  template: src=privtmp.j2 dest=/etc/tmpfiles.d/ssh-hostca.conf owner=root group=root mode=0644
+
+- name: Download ssh-hostca-srv
+  get_url: 
+    url=https://raw.githubusercontent.com/jabl/ssh-hostca-srv/master/src/ssh-hostca-srv.py 
+    dest=/usr/local/sbin/ssh-hostca-srv.py
+    owner=root
+    group=root
+    mode=0755
+    force=yes
+
+- name: Enable and start ssh host CA service
+  service: name=ssh-hostca.socket enabled=yes state=started
