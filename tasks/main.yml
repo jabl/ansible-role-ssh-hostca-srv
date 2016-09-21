@@ -37,7 +37,7 @@
 
 - name: Download ssh-hostca-srv
   get_url: 
-    url=https://raw.githubusercontent.com/jabl/ssh-hostca-srv/master/src/ssh_hostca_srv.py 
+    url=https://raw.githubusercontent.com/jabl/ssh-hostca-srv/v1.0.0/src/ssh_hostca_srv.py
     dest=/usr/local/lib/python/site-packages/ssh_hostca_srv.py
     owner=root
     group=root
